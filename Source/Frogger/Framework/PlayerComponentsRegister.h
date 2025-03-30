@@ -17,7 +17,7 @@ UCLASS()
 class FROGGER_API APlayerComponentsRegister : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:	
 	// Sets default values for this actor's properties
 	APlayerComponentsRegister();
