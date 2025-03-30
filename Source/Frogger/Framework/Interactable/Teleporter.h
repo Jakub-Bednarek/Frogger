@@ -12,19 +12,19 @@ class FROGGER_API ATeleporter : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ATeleporter();
 
-public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<ULevel> TargetLevel = nullptr;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	void SetTargetLevel(UWorld* Target);
+
+	UFUNCTION(BlueprintCallable)
+	void LoadTargetLevel();
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	TObjectPtr<UWorld> TargetLevel = nullptr;
 };
