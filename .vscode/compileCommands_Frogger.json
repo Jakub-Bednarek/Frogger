@@ -1,0 +1,58 @@
+[
+	{
+		"file": "C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\Source\\Frogger\\Frogger.Build.cs",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\.vscode\\compileCommands_Frogger\\Frogger.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\Source\\Frogger\\Frogger.cpp",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\.vscode\\compileCommands_Frogger\\Frogger.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\Source\\Frogger\\Frogger.h",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\.vscode\\compileCommands_Frogger\\Frogger.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\Source\\Frogger\\FroggerCharacter.cpp",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\.vscode\\compileCommands_Frogger\\Frogger.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\Source\\Frogger\\FroggerCharacter.h",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\.vscode\\compileCommands_Frogger\\Frogger.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\Source\\Frogger\\FroggerGameMode.cpp",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\.vscode\\compileCommands_Frogger\\Frogger.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.4\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\Source\\Frogger\\FroggerGameMode.h",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\blackflage\\Desktop\\uni\\UE5\\Frogger\\.vscode\\compileCommands_Frogger\\Frogger.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.4\\Engine\\Source"
+	}
+]
