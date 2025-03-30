@@ -17,7 +17,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void SetTargetLevel(UWorld* Target);
+	void SetTargetLevel(TSoftObjectPtr<UWorld> Target);
 
 	UFUNCTION(BlueprintCallable)
 	void LoadTargetLevel();
@@ -26,5 +26,5 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	TObjectPtr<UWorld> TargetLevel = nullptr;
+	TSoftObjectPtr<UWorld> TargetLevel = nullptr;
 };

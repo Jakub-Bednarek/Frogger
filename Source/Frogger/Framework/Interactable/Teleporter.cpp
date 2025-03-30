@@ -27,20 +27,12 @@ void ATeleporter::Tick(float DeltaTime)
 
 }
 
-void ATeleporter::SetTargetLevel(UWorld* Target)
+void ATeleporter::SetTargetLevel(TSoftObjectPtr<UWorld> Target)
 {
-	if (Target == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Provided Target in SetTargetLevel() is null."));
-		return;
-	}
-
 	TargetLevel = Target;
 }
 
 void ATeleporter::LoadTargetLevel()
 {
-	const auto LevelName = TargetLevel->GetMapName();
-
-	UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
+	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), TargetLevel);
 }
