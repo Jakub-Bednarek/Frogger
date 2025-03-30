@@ -15,6 +15,10 @@ public:
 	// Sets default values for this actor's properties
 	ATeleporter();
 
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<ULevel> TargetLevel = nullptr;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

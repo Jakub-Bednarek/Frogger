@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Framework/Interactable/MyActor.h"
+#include "Framework/Interactable/Teleporter.h"
 
 // Sets default values
-AMyActor::AMyActor()
+ATeleporter::ATeleporter()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,14 +12,14 @@ AMyActor::AMyActor()
 }
 
 // Called when the game starts or when spawned
-void AMyActor::BeginPlay()
+void ATeleporter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void AMyActor::Tick(float DeltaTime)
+void ATeleporter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
