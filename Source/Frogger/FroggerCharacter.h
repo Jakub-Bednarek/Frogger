@@ -46,7 +46,6 @@ class AFroggerCharacter : public ACharacter
 
 public:
 	AFroggerCharacter();
-	
 
 protected:
 
@@ -69,5 +68,20 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Jump")
+	void OnJumpHoldMaxReached();
+private:
+	void OnJumpStarted();
+	void OnJumpReleased();
+	void IncreaseJumpHoldTime();
+	
+	FTimerHandle JumpTimerHandle;
+	bool IsJumpingInPlace;
+	bool IsMaxJumpPower;
+	float JumpHoldTime;
+	float MaxJumpHoldTime = 1.0f; // Maximum time jump can be charged
+	float MinJumpStrength = 700.f; // Minimum jump force
+	float MaxJumpStrength = 1200.f; // Maximum jump force
 };
 

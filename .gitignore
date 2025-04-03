@@ -3,6 +3,8 @@
 .vscode
 .vsconfig
 *.code-workspace
+.idea/
+Content/Downloaded
 
 # Compiled Object files
 *.slo

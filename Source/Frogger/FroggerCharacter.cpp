@@ -50,6 +50,13 @@ AFroggerCharacter::AFroggerCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// Initialize jump hold time
+	JumpHoldTime = 0.0f;
+	MaxJumpHoldTime = 1.0f; // Max time for full power jump
+	MinJumpStrength = 700.f;
+	MaxJumpStrength = 1400.f; // Twice the normal jump strength
+	IsJumpingInPlace = false;
+	
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -76,10 +83,8 @@ void AFroggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
-		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFroggerCharacter::OnJumpStarted);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFroggerCharacter::OnJumpReleased);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFroggerCharacter::Move);
@@ -95,7 +100,9 @@ void AFroggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AFroggerCharacter::Move(const FInputActionValue& Value)
 {
-	// input is a Vector2D
+	if (IsJumpingInPlace)
+		return;
+	
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
@@ -127,4 +134,54 @@ void AFroggerCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AFroggerCharacter::OnJumpStarted()
+{
+	if (GetVelocity().Size() <= 0)
+		IsJumpingInPlace = true;
+	else
+		IsJumpingInPlace = false;
+	
+	JumpHoldTime = 0.0f;
+	GetWorldTimerManager().SetTimer(JumpTimerHandle, this, &AFroggerCharacter::IncreaseJumpHoldTime, 0.01f, true);
+}
+
+void AFroggerCharacter::IncreaseJumpHoldTime()
+{
+	if (JumpHoldTime < 2)
+	{
+		JumpHoldTime += 0.01f;
+		IsMaxJumpPower = false;
+	}
+	else
+	{
+		if (!IsMaxJumpPower)
+		{
+			OnJumpHoldMaxReached();
+			IsMaxJumpPower = true;
+			GetWorldTimerManager().ClearTimer(JumpTimerHandle);
+		} 
+	}
+}
+
+void AFroggerCharacter::OnJumpReleased()
+{
+	GetWorldTimerManager().ClearTimer(JumpTimerHandle);
+	if (GetCharacterMovement()->IsFalling())
+		return;
+	
+	float JumpStrength = FMath::Lerp(MinJumpStrength, MaxJumpStrength, JumpHoldTime / MaxJumpHoldTime);
+	GetCharacterMovement()->JumpZVelocity = JumpStrength;
+	if (GetVelocity().Size() <= 0)
+		Jump();
+	else
+	{
+		FVector ForwardVelocity = GetActorForwardVector() * JumpStrength;
+		FVector UpwardVelocity = FVector(0, 0, JumpStrength * 0.6f);
+		
+		LaunchCharacter(ForwardVelocity + UpwardVelocity, true, true);
+	}
+	
+	IsJumpingInPlace = false;
 }
