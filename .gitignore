@@ -81,3 +81,10 @@ DerivedDataCache/*
 # Clangd
 .clang-format
 .clangd
+
+# External assets downloaded
+Content/*
+!Content/Frogger/
+!Content/ThirdPerson/
+!Content/StarterContent/
+!Content/LevelPrototyping/
