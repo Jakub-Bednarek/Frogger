@@ -62,7 +62,7 @@ void APlayerComponentsRegister::CreatePlayerComponents()
 	}
 
 
-	if (not FoundComponentsSet->bCreateDefaults)
+	if (not bCreateDefaults)
 	{
 		return;
 	}

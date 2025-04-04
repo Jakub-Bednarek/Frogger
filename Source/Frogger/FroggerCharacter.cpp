@@ -83,9 +83,6 @@ void AFroggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFroggerCharacter::OnJumpStarted);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFroggerCharacter::OnJumpReleased);
-
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFroggerCharacter::Move);
 
