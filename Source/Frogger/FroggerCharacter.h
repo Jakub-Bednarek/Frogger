@@ -19,6 +19,8 @@ UCLASS(config=Game)
 class AFroggerCharacter : public ACharacter
 {
 	GENERATED_BODY()
+	
+	AFroggerCharacter();
 
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -41,7 +43,13 @@ class AFroggerCharacter : public ACharacter
 	UInputAction* LookAction;
 
 public:
-	AFroggerCharacter();
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Jump")
+	void OnJumpHoldMaxReached();
 
 protected:
 
@@ -50,7 +58,6 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
 
 protected:
 	// APawn interface
@@ -59,25 +66,10 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Jump")
-	void OnJumpHoldMaxReached();
 private:
-	void OnJumpStarted();
-	void OnJumpReleased();
-	void IncreaseJumpHoldTime();
-	
-	FTimerHandle JumpTimerHandle;
-	bool IsJumpingInPlace;
-	bool IsMaxJumpPower;
-	float JumpHoldTime;
-	float MaxJumpHoldTime = 1.0f; // Maximum time jump can be charged
-	float MinJumpStrength = 700.f; // Minimum jump force
-	float MaxJumpStrength = 1200.f; // Maximum jump force
-};
+	UFUNCTION()
+	void BindEvents();
 
+	UFUNCTION()
+	void ExecuteJump(const float JumpStrength);
+};

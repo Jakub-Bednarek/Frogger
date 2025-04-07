@@ -1,7 +1,12 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "FroggerCharacter.h"
+
+#include "CharacterComponents/JumpCharacterComponent.h"
+#include "Framework/PlayerComponentsRegister.h"
+
 #include "Engine/LocalPlayer.h"
+#include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -10,6 +15,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -49,16 +55,21 @@ AFroggerCharacter::AFroggerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
-	// Initialize jump hold time
-	JumpHoldTime = 0.0f;
-	MaxJumpHoldTime = 1.0f; // Max time for full power jump
-	MinJumpStrength = 700.f;
-	MaxJumpStrength = 1400.f; // Twice the normal jump strength
-	IsJumpingInPlace = false;
 	
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	TArray<AActor*> ActorsInScene {};
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerComponentsRegister::StaticClass(), ActorsInScene);
+
+	if (ActorsInScene.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to find actor of type APlayerComponentsRegister."));
+		return;
+	}
+
+	auto* PlayerComponentsRegister = Cast<APlayerComponentsRegister>(ActorsInScene[0]);
+	PlayerComponentsRegister->OnComponentsInitializedEvent.BindDynamic(this, &AFroggerCharacter::BindEvents);
 }
 
 void AFroggerCharacter::BeginPlay()
@@ -97,9 +108,8 @@ void AFroggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AFroggerCharacter::Move(const FInputActionValue& Value)
 {
-	if (IsJumpingInPlace)
-		return;
-	
+	// TODO: return while in air
+
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
@@ -133,52 +143,29 @@ void AFroggerCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void AFroggerCharacter::OnJumpStarted()
+void AFroggerCharacter::ExecuteJump(const float JumpStrength)
 {
-	if (GetVelocity().Size() <= 0)
-		IsJumpingInPlace = true;
-	else
-		IsJumpingInPlace = false;
-	
-	JumpHoldTime = 0.0f;
-	GetWorldTimerManager().SetTimer(JumpTimerHandle, this, &AFroggerCharacter::IncreaseJumpHoldTime, 0.01f, true);
-}
-
-void AFroggerCharacter::IncreaseJumpHoldTime()
-{
-	if (JumpHoldTime < 2)
-	{
-		JumpHoldTime += 0.01f;
-		IsMaxJumpPower = false;
-	}
-	else
-	{
-		if (!IsMaxJumpPower)
-		{
-			OnJumpHoldMaxReached();
-			IsMaxJumpPower = true;
-			GetWorldTimerManager().ClearTimer(JumpTimerHandle);
-		} 
-	}
-}
-
-void AFroggerCharacter::OnJumpReleased()
-{
-	GetWorldTimerManager().ClearTimer(JumpTimerHandle);
 	if (GetCharacterMovement()->IsFalling())
+	{
 		return;
-	
-	float JumpStrength = FMath::Lerp(MinJumpStrength, MaxJumpStrength, JumpHoldTime / MaxJumpHoldTime);
+	}
+
 	GetCharacterMovement()->JumpZVelocity = JumpStrength;
 	if (GetVelocity().Size() <= 0)
+	{
 		Jump();
+	}
 	else
 	{
-		FVector ForwardVelocity = GetActorForwardVector() * JumpStrength;
-		FVector UpwardVelocity = FVector(0, 0, JumpStrength * 0.6f);
+		FVector LaunchVelocityVector = GetActorForwardVector() * JumpStrength;
+		LaunchVelocityVector.Z += JumpStrength * 0.6f;
 		
-		LaunchCharacter(ForwardVelocity + UpwardVelocity, true, true);
+		LaunchCharacter(LaunchVelocityVector, true, true);
 	}
-	
-	IsJumpingInPlace = false;
+}
+
+void AFroggerCharacter::BindEvents()
+{
+	auto* JumpComponent = GetComponentByClass<UJumpCharacterComponent>();
+	JumpComponent->OnJumpEvent.AddDynamic(this, &AFroggerCharacter::ExecuteJump);
 }

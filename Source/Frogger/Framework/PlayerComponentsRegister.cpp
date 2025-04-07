@@ -16,6 +16,8 @@ void APlayerComponentsRegister::BeginPlay()
 	Super::BeginPlay();
 
 	CreatePlayerComponents();
+
+	OnComponentsInitializedEvent.ExecuteIfBound();
 }
 
 // Called every frame

@@ -10,7 +10,6 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnJumpEvent, const float, JumpStrength);
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable )
 class FROGGER_API UJumpCharacterComponent : public UActorComponent
 {

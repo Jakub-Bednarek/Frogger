@@ -7,6 +7,8 @@
 #include "Components/ActorComponent.h"
 #include "PlayerComponentsRegister.generated.h"
 
+DECLARE_DYNAMIC_DELEGATE(FOnComponentsInitialized);
+
 struct LevelComponentsData
 {
 	bool bCreateDefaults;
@@ -29,6 +31,10 @@ public:
 	void RegisterLevelComponentsSet(TSoftObjectPtr<UWorld> Level, TArray<TSubclassOf<UActorComponent>> Components, bool CreateDefaults = true);
 
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FOnComponentsInitialized OnComponentsInitializedEvent;
 
 protected:
 	virtual void BeginPlay() override;
