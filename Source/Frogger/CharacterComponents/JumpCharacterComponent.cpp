@@ -5,13 +5,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputSubsystems.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 #include "JumpCharacterComponent.h"
 
 UJumpCharacterComponent::UJumpCharacterComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
-
 
 void UJumpCharacterComponent::BeginPlay()
 {
@@ -31,60 +32,21 @@ void UJumpCharacterComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UJumpCharacterComponent::OnJumpPressed()
 {
-	UE_LOG(LogTemp, Error, TEXT("START JUMP"));
-	if (CharacterOwner->GetVelocity().Size() <= 0)
-	{
-		bIsJumpingInPlace = true;
-	}
-	else
-	{
-		bIsJumpingInPlace = false;
-	}
-
-	JumpHoldTime = 0.0f;
-	// GetWorldTimerManager().SetTimer(JumpTimerHandle, this, &UJumpCharacterComponent::UpdateJumpTimer, 0.01f, true);
+	GetWorld()->GetTimerManager().SetTimer(JumpTimerHandle, this, &UJumpCharacterComponent::FireJumpEvent, MaxJumpHoldTime, false);
 }
 
-void UJumpCharacterComponent::OnJumpReleased()
+void UJumpCharacterComponent::FireJumpEvent()
 {
-	UE_LOG(LogTemp, Error, TEXT("END JUMP"));
-	// GetWorldTimerManager().ClearTimer(JumpTimerHandle);
-	auto* OwnerMovementComponent = CharacterOwner->GetCharacterMovement(); 
-	if (OwnerMovementComponent->IsFalling())
+	auto& TimerManager = GetWorld()->GetTimerManager();
+	const auto TimeElapsed = TimerManager.GetTimerElapsed(JumpTimerHandle);
+	const float JumpStrength = FMath::Lerp(MinJumpStrength, MaxJumpStrength, TimeElapsed / MaxJumpHoldTime);
+
+	if (OnJumpEvent.IsBound())
 	{
-		return;
-	}
-	
-	const float JumpStrength = FMath::Lerp(MinJumpStrength, MaxJumpStrength, JumpHoldTime / MaxJumpHoldTime);
-	OwnerMovementComponent->JumpZVelocity = JumpStrength;
-	if (CharacterOwner->GetVelocity().Size() <= 0)
-	{
-		CharacterOwner->Jump();
-	}
-	else
-	{
-		FVector ForwardVelocity = CharacterOwner->GetActorForwardVector() * JumpStrength;
-		FVector UpwardVelocity = FVector(0, 0, JumpStrength * 0.6f);
-		
-		// LaunchCharacter(ForwardVelocity + UpwardVelocity, true, true);
+		OnJumpEvent.Broadcast(JumpStrength);
 	}
 
-	// bIsJumpingInPlace = false;
-}
-
-void UJumpCharacterComponent::UpdateJumpTimer()
-{
-	if (JumpHoldTime < 2)
-	{
-		JumpHoldTime += 0.01f;
-		bIsMaxJumpPower = false;
-	}
-	else if (!bIsMaxJumpPower)
-	{
-		// OnJumpHoldMaxReached();
-		bIsMaxJumpPower = true;
-		// GetWorldTimerManager().ClearTimer(JumpTimerHandle);
-	}
+	TimerManager.ClearTimer(JumpTimerHandle);
 }
 
 void UJumpCharacterComponent::BindInputActions()
@@ -93,7 +55,7 @@ void UJumpCharacterComponent::BindInputActions()
 	auto PlayerInputComponent = Owner->InputComponent;
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &UJumpCharacterComponent::OnJumpPressed);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &UJumpCharacterComponent::OnJumpReleased);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &UJumpCharacterComponent::FireJumpEvent);
 	}
 	else
 	{

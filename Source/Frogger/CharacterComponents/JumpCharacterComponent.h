@@ -8,7 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "JumpCharacterComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnJumpEvent, const bool, bIsMaxHeight);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnJumpEvent, const float, JumpStrength);
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable )
@@ -25,24 +25,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FOnJumpEvent OnJumpEvent; 
+
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void OnJumpPressed();
+	virtual void FireJumpEvent();
+
 private:
-	void OnJumpPressed();
-	void OnJumpReleased();
-
-	void UpdateJumpTimer();
-
 	void BindInputActions();
 
 private:
 	FTimerHandle JumpTimerHandle;
-
-	bool bIsJumpingInPlace;
-	bool bIsMaxJumpPower;
 	
-	float JumpHoldTime = 0.0f;
 	float MaxJumpHoldTime = 1.0f; // Maximum time jump can be charged
 	float MinJumpStrength = 700.f; // Minimum jump force
 	float MaxJumpStrength = 1200.f; // Maximum jump force
