@@ -17,6 +17,25 @@ class FROGGER_API UJumpCharacterComponent : public UActorComponent
 
 public:	
 	UJumpCharacterComponent();
+
+	UFUNCTION(BlueprintCallable)
+	void SetMaxJumpHoldTime(const float Value);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetMinJumpStrength(const float Value);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetMaxJumpStrength(const float Value);
+
+	UFUNCTION(BlueprintCallable)
+	float GetMaxJumpHoldTime();
+	
+	UFUNCTION(BlueprintCallable)
+	float GetMinJumpStrength();
+	
+	UFUNCTION(BlueprintCallable)
+	float GetMaxJumpStrength();
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
@@ -37,11 +56,15 @@ private:
 	void BindInputActions();
 
 private:
+	inline static constexpr float DefaultMaxJumpHoldTime = 1.0f;
+	inline static constexpr float DefaultMinJumpStrength = 700.0f;
+	inline static constexpr float DefaultMaxJumpStrength = 1200.0f; 
+
 	FTimerHandle JumpTimerHandle;
 	
-	float MaxJumpHoldTime = 1.0f; // Maximum time jump can be charged
-	float MinJumpStrength = 700.f; // Minimum jump force
-	float MaxJumpStrength = 1200.f; // Maximum jump force
+	float MaxJumpHoldTime;
+	float MinJumpStrength;
+	float MaxJumpStrength;
 
 	ACharacter* CharacterOwner;
 };

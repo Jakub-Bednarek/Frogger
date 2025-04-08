@@ -22,12 +22,75 @@ void UJumpCharacterComponent::BeginPlay()
 	check(CharacterOwner != nullptr);
 
 	BindInputActions();
+
+	SetMaxJumpHoldTime(DefaultMaxJumpHoldTime);
+	SetMinJumpStrength(DefaultMinJumpStrength);
+	SetMaxJumpStrength(DefaultMaxJumpStrength);
 }
 
 
 void UJumpCharacterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
+
+void UJumpCharacterComponent::SetMaxJumpHoldTime(const float Value)
+{
+	if (Value < 0.0f)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to set MaxJumpHoldTime, value must be greater than 0. Defaulting to %f"), DefaultMaxJumpHoldTime);
+
+		MaxJumpHoldTime = DefaultMaxJumpHoldTime;
+
+		return;
+	}
+
+	MaxJumpHoldTime = Value;
+}
+
+// TODO: check for Min > Max?
+void UJumpCharacterComponent::SetMinJumpStrength(const float Value)
+{
+	if (Value < 0.0f)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to set MinJumpStrength, value must be greater or equal 0. Defaulting to %f"), DefaultMinJumpStrength);
+
+		MinJumpStrength = DefaultMinJumpStrength;
+
+		return;
+	}
+
+	MinJumpStrength = Value;
+}
+
+// TODO: check for Max > Min?
+void UJumpCharacterComponent::SetMaxJumpStrength(const float Value)
+{
+	if (Value < 0.0f)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to set MaxJumpStrength, value must be greater or equal 0. Defaulting to %f"), DefaultMaxJumpStrength);
+
+		MaxJumpStrength = DefaultMaxJumpStrength;
+
+		return;
+	}
+
+	MaxJumpStrength = Value;
+}
+
+float UJumpCharacterComponent::GetMaxJumpHoldTime()
+{
+	return MaxJumpHoldTime;
+}
+
+float UJumpCharacterComponent::GetMinJumpStrength()
+{
+	return MinJumpStrength;
+}
+
+float UJumpCharacterComponent::GetMaxJumpStrength()
+{
+	return MaxJumpStrength;
 }
 
 void UJumpCharacterComponent::OnJumpPressed()
@@ -38,7 +101,7 @@ void UJumpCharacterComponent::OnJumpPressed()
 void UJumpCharacterComponent::FireJumpEvent()
 {
 	auto& TimerManager = GetWorld()->GetTimerManager();
-	const auto TimeElapsed = TimerManager.GetTimerElapsed(JumpTimerHandle);
+	const float TimeElapsed = TimerManager.GetTimerElapsed(JumpTimerHandle);
 	const float JumpStrength = FMath::Lerp(MinJumpStrength, MaxJumpStrength, TimeElapsed / MaxJumpHoldTime);
 
 	if (OnJumpEvent.IsBound())

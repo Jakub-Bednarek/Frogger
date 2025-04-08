@@ -108,7 +108,17 @@ void AFroggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AFroggerCharacter::Move(const FInputActionValue& Value)
 {
-	// TODO: return while in air
+	if (bIsJumpingInPlace)
+	{
+		if (GetVelocity().Z == 0)
+		{
+			bIsJumpingInPlace = false;
+		}
+		else
+		{
+			return;
+		}
+	}
 
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -151,12 +161,16 @@ void AFroggerCharacter::ExecuteJump(const float JumpStrength)
 	}
 
 	GetCharacterMovement()->JumpZVelocity = JumpStrength;
-	if (GetVelocity().Size() <= 0)
+	if (GetVelocity().Size() <= 0.0)
 	{
+		bIsJumpingInPlace = true;
+
 		Jump();
 	}
 	else
 	{
+		bIsJumpingInPlace = false;
+
 		FVector LaunchVelocityVector = GetActorForwardVector() * JumpStrength;
 		LaunchVelocityVector.Z += JumpStrength * 0.6f;
 		
@@ -167,5 +181,8 @@ void AFroggerCharacter::ExecuteJump(const float JumpStrength)
 void AFroggerCharacter::BindEvents()
 {
 	auto* JumpComponent = GetComponentByClass<UJumpCharacterComponent>();
-	JumpComponent->OnJumpEvent.AddDynamic(this, &AFroggerCharacter::ExecuteJump);
+	if (JumpComponent != nullptr)
+	{
+		JumpComponent->OnJumpEvent.AddDynamic(this, &AFroggerCharacter::ExecuteJump);
+	}
 }

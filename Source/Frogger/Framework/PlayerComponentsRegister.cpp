@@ -47,6 +47,7 @@ void APlayerComponentsRegister::CreatePlayerComponents()
 	auto* Player 			= UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	auto FoundComponentsSet = LevelToComponentRegister.Find(CurrentLevelName);
 
+	// TODO: fix creation order -> defaults should be created first
 	if(FoundComponentsSet != nullptr)
 	{
 		for (const auto& Component : FoundComponentsSet->Components)
