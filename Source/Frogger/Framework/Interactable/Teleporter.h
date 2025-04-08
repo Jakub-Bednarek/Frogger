@@ -9,22 +9,22 @@
 UCLASS()
 class FROGGER_API ATeleporter : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	ATeleporter();
+    GENERATED_BODY()
 
-	virtual void Tick(float DeltaTime) override;
+public:
+    ATeleporter();
 
-	UFUNCTION(BlueprintCallable)
-	void SetTargetLevel(TSoftObjectPtr<UWorld> Target);
+    virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-	void LoadTargetLevel();
+    UFUNCTION(BlueprintCallable)
+    void SetTargetLevel(TSoftObjectPtr<UWorld> Target);
+
+    UFUNCTION(BlueprintCallable)
+    void LoadTargetLevel();
 
 protected:
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
 private:
-	TSoftObjectPtr<UWorld> TargetLevel = nullptr;
+    TSoftObjectPtr<UWorld> TargetLevel = nullptr;
 };

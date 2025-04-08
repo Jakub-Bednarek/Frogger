@@ -11,38 +11,39 @@ DECLARE_DYNAMIC_DELEGATE(FOnComponentsInitialized);
 
 struct LevelComponentsData
 {
-	bool bCreateDefaults;
-	TArray<TSubclassOf<UActorComponent>> Components;
+    bool bCreateDefaults;
+    TArray<TSubclassOf<UActorComponent>> Components;
 };
 
 UCLASS()
 class FROGGER_API APlayerComponentsRegister : public AActor
 {
-	GENERATED_BODY()
-
-public:	
-	// Sets default values for this actor's properties
-	APlayerComponentsRegister();
-	
-	UFUNCTION(BlueprintCallable)
-	void RegisterDefaultComponents(TArray<TSubclassOf<UActorComponent>> Components);
-
-	UFUNCTION(BlueprintCallable)
-	void RegisterLevelComponentsSet(TSoftObjectPtr<UWorld> Level, TArray<TSubclassOf<UActorComponent>> Components, bool CreateDefaults = true);
-
-	virtual void Tick(float DeltaTime) override;
+    GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FOnComponentsInitialized OnComponentsInitializedEvent;
+    // Sets default values for this actor's properties
+    APlayerComponentsRegister();
+
+    UFUNCTION(BlueprintCallable)
+    void RegisterDefaultComponents(TArray<TSubclassOf<UActorComponent>> Components);
+
+    UFUNCTION(BlueprintCallable)
+    void RegisterLevelComponentsSet(TSoftObjectPtr<UWorld> Level, TArray<TSubclassOf<UActorComponent>> Components,
+                                    bool CreateDefaults = true);
+
+    virtual void Tick(float DeltaTime) override;
+
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FOnComponentsInitialized OnComponentsInitializedEvent;
 
 protected:
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
 private:
-	void CreatePlayerComponents();
+    void CreatePlayerComponents();
 
 private:
-	TArray<TSubclassOf<UActorComponent>> DefaultComponents {};
-	TMap<FString, LevelComponentsData> 	 LevelToComponentRegister {};
+    TArray<TSubclassOf<UActorComponent>> DefaultComponents{};
+    TMap<FString, LevelComponentsData> LevelToComponentRegister{};
 };

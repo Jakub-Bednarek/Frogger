@@ -3,5 +3,4 @@
 #include "Frogger.h"
 #include "Modules/ModuleManager.h"
 
-IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, Frogger, "Frogger" );
- 
+IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, Frogger, "Frogger");

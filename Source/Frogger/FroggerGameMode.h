@@ -9,11 +9,8 @@
 UCLASS(minimalapi)
 class AFroggerGameMode : public AGameModeBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	AFroggerGameMode();
+    AFroggerGameMode();
 };
-
-
-
