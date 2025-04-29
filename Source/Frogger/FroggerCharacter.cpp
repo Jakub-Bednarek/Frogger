@@ -59,6 +59,12 @@ AFroggerCharacter::AFroggerCharacter()
 
     // Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character)
     // are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+}
+
+void AFroggerCharacter::BeginPlay()
+{
+    // Call the base class
+    Super::BeginPlay();
 
     TArray<AActor *> ActorsInScene{};
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerComponentsRegister::StaticClass(), ActorsInScene);
@@ -71,12 +77,6 @@ AFroggerCharacter::AFroggerCharacter()
 
     auto *PlayerComponentsRegister = Cast<APlayerComponentsRegister>(ActorsInScene[0]);
     PlayerComponentsRegister->OnComponentsInitializedEvent.BindDynamic(this, &AFroggerCharacter::BindEvents);
-}
-
-void AFroggerCharacter::BeginPlay()
-{
-    // Call the base class
-    Super::BeginPlay();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -190,5 +190,9 @@ void AFroggerCharacter::BindEvents()
     if (JumpComponent != nullptr)
     {
         JumpComponent->OnJumpEvent.AddDynamic(this, &AFroggerCharacter::ExecuteJump);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("JumpComponent in FroggerCharacter is nullptr."));
     }
 }

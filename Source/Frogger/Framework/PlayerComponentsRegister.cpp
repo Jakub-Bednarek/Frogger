@@ -12,12 +12,20 @@ void APlayerComponentsRegister::BeginPlay()
     Super::BeginPlay();
 
     CreatePlayerComponents();
-
-    OnComponentsInitializedEvent.ExecuteIfBound();
 }
 
 // Called every frame
-void APlayerComponentsRegister::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
+void APlayerComponentsRegister::Tick(float DeltaTime) {
+    Super::Tick(DeltaTime);
+
+    // TODO: checking every loop shouldn't be needed, this statement is temporal fix for a race
+    // between BeginPlay() in Player and PlayerComponentRegister
+    if(OnComponentsInitializedEvent.IsBound())
+    {
+        OnComponentsInitializedEvent.Execute();
+        OnComponentsInitializedEvent.Unbind();
+    }
+}
 
 void APlayerComponentsRegister::RegisterDefaultComponents(TArray<TSubclassOf<UActorComponent>> Components)
 {
