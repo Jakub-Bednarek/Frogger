@@ -118,7 +118,7 @@ void AFroggerCharacter::Move(const FInputActionValue &Value)
     {
         if (GetVelocity().Z == 0)
         {
-            bIsJumpingInPlace = false;
+            //bIsJumpingInPlace = false;
         }
         else
         {
